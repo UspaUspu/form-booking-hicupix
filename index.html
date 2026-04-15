@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hicupix Photobooth</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- ── Video Background ── -->
+  <div class="video-bg">
+    <video autoplay muted loop playsinline>
+      <source src="assets/IMG_1616.mp4" type="video/mp4" />
+    </video>
+  </div>
+
+  <!-- ── Main Content ── -->
+  <div class="container">
+
+    <div class="logo-badge">
+      <img src="assets/hicupix logo.png" alt="Hicupix Photobooth" />
+    </div>
+
+    <div class="btn-group">
+      <div class="btn-row">
+        <a href="#" id="btnBookNow" class="btn btn-pink">Book Now</a>
+        <a href="#" id="btnGallery" class="btn btn-pink">Gallery</a>
+      </div>
+      <a href="https://wa.me/6285927420172?text=Halo%2C%20saya%20tertarik%20untuk%20booking" target="_blank" rel="noopener" class="btn btn-yellow">Hubungi Kami</a>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════
+       BOOKING MODAL
+  ══════════════════════════════════ -->
+  <div class="modal-overlay" id="bookingOverlay">
+
+    <!-- Logo di luar form card -->
+    <div class="modal-logo">
+      <img src="assets/hicupix logo.png" alt="Hicupix Photobooth" />
+    </div>
+
+    <div class="modal-card">
+
+      <div class="modal-header">
+        <h2>BOOKING FORM</h2>
+        <button class="modal-close" id="modalClose" aria-label="Tutup">&times;</button>
+      </div>
+
+      <form id="bookingForm" novalidate>
+
+        <!-- Nama -->
+        <div class="form-group">
+          <label for="nama">Nama Pengantin / Acara</label>
+          <input type="text" id="nama" placeholder="Contoh: Pernikahan Andi & Sari" required />
+        </div>
+
+        <!-- Tanggal, Jam Mulai, Jam Selesai -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="tanggal">Tanggal Acara</label>
+            <input type="date" id="tanggal" required />
+          </div>
+          <div class="form-group">
+            <label for="jamMulai">Jam Mulai</label>
+            <input type="time" id="jamMulai" required />
+          </div>
+          <div class="form-group">
+            <label for="jamSelesai">Jam Selesai</label>
+            <input type="time" id="jamSelesai" required />
+          </div>
+        </div>
+
+        <!-- Paket Durasi -->
+        <div class="paket-group">
+          <label>Paket Durasi</label>
+          <div class="paket-options">
+            <input type="radio" name="paket" id="p3" value="3 Jam" />
+            <label for="p3">3 Jam</label>
+
+            <input type="radio" name="paket" id="p6" value="6 Jam" checked />
+            <label for="p6">6 Jam</label>
+
+            <input type="radio" name="paket" id="p8" value="8 Jam" />
+            <label for="p8">8 Jam</label>
+
+            <input type="radio" name="paket" id="pCustom" value="Custom" />
+            <label for="pCustom">Custom</label>
+          </div>
+        </div>
+
+        <!-- Lokasi -->
+        <div class="form-group">
+          <label for="lokasi">Lokasi Acara</label>
+          <input type="text" id="lokasi" placeholder="Nama gedung / alamat acara" required />
+        </div>
+
+        <!-- DP Info -->
+        <div class="dp-info">
+          <strong>DP : Rp 500.000</strong>
+          Ditransfer ke BRI <strong>3280010366745311</strong><br />
+          a/n Muhammad Fadli Yusuf
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn-book-modal">BOOK NOW</button>
+
+      </form>
+
+      <!-- Syarat & Ketentuan -->
+      <div class="syarat">
+        <strong>Syarat &amp; Ketentuan</strong>
+        <ul>
+          <li>Perubahan jadwal minimal H-30 sebelum acara</li>
+          <li>Pelunasan dilakukan maksimal H-1 acara dimulai</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       GALLERY MODAL
+  ══════════════════════════════════ -->
+  <div class="modal-overlay" id="galleryOverlay">
+
+    <div class="modal-logo">
+      <img src="assets/hicupix logo.png" alt="Hicupix Photobooth" />
+    </div>
+
+    <div class="gallery-card">
+
+      <div class="modal-header">
+        <h2>GALLERY</h2>
+        <button class="modal-close" id="galleryClose" aria-label="Tutup">&times;</button>
+      </div>
+
+      <div class="gallery-grid">
+        <img src="assets/gallery/20260404_145842808.jpg" alt="Hicupix Gallery" loading="lazy" />
+        <img src="assets/gallery/20260404_145928818.jpg" alt="Hicupix Gallery" loading="lazy" />
+        <img src="assets/gallery/20260404_150928524.jpg" alt="Hicupix Gallery" loading="lazy" />
+        <img src="assets/gallery/20260406_145805139.jpg" alt="Hicupix Gallery" loading="lazy" />
+        <img src="assets/gallery/20260406_153631481.jpg" alt="Hicupix Gallery" loading="lazy" />
+        <img src="assets/gallery/20260406_181249328.jpg" alt="Hicupix Gallery" loading="lazy" />
+        <img src="assets/gallery/20260407_131140801.jpg" alt="Hicupix Gallery" loading="lazy" />
+        <img src="assets/gallery/20260407_131426604.jpg" alt="Hicupix Gallery" loading="lazy" />
+        <img src="assets/gallery/20260407_131705028.jpg" alt="Hicupix Gallery" loading="lazy" />
+        <img src="assets/gallery/nn5.png"               alt="Hicupix Gallery" loading="lazy" />
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Lightbox ── -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose">&times;</button>
+    <img id="lightboxImg" src="" alt="" />
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
