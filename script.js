@@ -92,48 +92,64 @@ document.getElementById('bookingForm').addEventListener('submit', async (e) => {
   const paket      = document.querySelector('input[name="paket"]:checked')?.value ?? '-';
   const lokasi     = document.getElementById('lokasi').value.trim();
 
+  const pesan =
+    `*BOOKING HICUPIX PHOTOBOOTH* 📸\n\n` +
+    `👤 Nama / Acara : ${nama}\n` +
+    `📅 Tanggal      : ${tanggal}\n` +
+    `🕐 Jam Mulai    : ${jamMulai}\n` +
+    `🕔 Jam Selesai  : ${jamSelesai}\n` +
+    `📦 Paket        : ${paket}\n` +
+    `📍 Lokasi       : ${lokasi}`;
+
+  const waUrl = `https://wa.me/6285927420172?text=${encodeURIComponent(pesan)}`;
+
+  // Deteksi environment: localhost pakai server, selain itu langsung WA
+  const isLocalhost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+
+  if (!isLocalhost) {
+    // GitHub Pages / static hosting:
+    // window.open HARUS dipanggil di sini (synchronous, sebelum await apapun)
+    // agar tidak diblok popup blocker browser
+    window.location.href = waUrl;
+    showToast('✅ Membuka WhatsApp...', 'success');
+    e.target.reset();
+    setTimeout(closeModal, 1000);
+    return;
+  }
+
+  // ── Localhost: kirim via server Node.js ──
   submitBtn.disabled    = true;
   submitBtn.textContent = 'Mengirim...';
 
-  // Coba kirim via server (localhost / server aktif)
-  let serverOk = false;
   try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 5000);
+
     const res  = await fetch('/api/booking', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ nama, tanggal, jamMulai, jamSelesai, paket, lokasi }),
-      signal:  AbortSignal.timeout(5000)   // timeout 5 detik
+      signal:  controller.signal
     });
+    clearTimeout(timer);
+
     const data = await res.json();
     if (data.success) {
-      serverOk = true;
       showToast('✅ Booking berhasil dikirim ke Hicupix!', 'success');
       e.target.reset();
       setTimeout(closeModal, 1800);
+    } else {
+      showToast('❌ ' + (data.message || 'Gagal mengirim.'), 'error');
     }
-  } catch { /* server tidak tersedia, lanjut ke fallback */ }
-
-  // Fallback: redirect ke WA dengan isi form (untuk GitHub Pages / static hosting)
-  if (!serverOk) {
-    const pesan =
-      `*BOOKING HICUPIX PHOTOBOOTH* 📸\n\n` +
-      `👤 Nama / Acara : ${nama}\n` +
-      `📅 Tanggal      : ${tanggal}\n` +
-      `🕐 Jam Mulai    : ${jamMulai}\n` +
-      `🕔 Jam Selesai  : ${jamSelesai}\n` +
-      `📦 Paket        : ${paket}\n` +
-      `📍 Lokasi       : ${lokasi}`;
-
-    const url = `https://wa.me/6285927420172?text=${encodeURIComponent(pesan)}`;
-    window.open(url, '_blank');
-
-    showToast('✅ Booking diteruskan ke WhatsApp!', 'success');
+  } catch {
+    // Server gagal → fallback WA (di catch masih boleh redirect)
+    window.location.href = waUrl;
     e.target.reset();
-    setTimeout(closeModal, 1800);
+    setTimeout(closeModal, 1000);
+  } finally {
+    submitBtn.disabled    = false;
+    submitBtn.textContent = 'BOOK NOW';
   }
-
-  submitBtn.disabled    = false;
-  submitBtn.textContent = 'BOOK NOW';
 });
 
 // ── Toast Notification ───────────────────────────────────
