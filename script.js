@@ -80,44 +80,60 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// ── Submit Form → kirim ke server → WA Hicupix ──────────
+// ── Submit Form ──────────────────────────────────────────
 document.getElementById('bookingForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const submitBtn = e.target.querySelector('.btn-book-modal');
-  const nama      = document.getElementById('nama').value.trim();
-  const tanggal   = document.getElementById('tanggal').value;
-  const jamMulai  = document.getElementById('jamMulai').value;
+  const submitBtn  = e.target.querySelector('.btn-book-modal');
+  const nama       = document.getElementById('nama').value.trim();
+  const tanggal    = document.getElementById('tanggal').value;
+  const jamMulai   = document.getElementById('jamMulai').value;
   const jamSelesai = document.getElementById('jamSelesai').value;
-  const paket     = document.querySelector('input[name="paket"]:checked')?.value ?? '-';
-  const lokasi    = document.getElementById('lokasi').value.trim();
+  const paket      = document.querySelector('input[name="paket"]:checked')?.value ?? '-';
+  const lokasi     = document.getElementById('lokasi').value.trim();
 
-  // Loading state
   submitBtn.disabled    = true;
   submitBtn.textContent = 'Mengirim...';
 
+  // Coba kirim via server (localhost / server aktif)
+  let serverOk = false;
   try {
     const res  = await fetch('/api/booking', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ nama, tanggal, jamMulai, jamSelesai, paket, lokasi })
+      body:    JSON.stringify({ nama, tanggal, jamMulai, jamSelesai, paket, lokasi }),
+      signal:  AbortSignal.timeout(5000)   // timeout 5 detik
     });
-
     const data = await res.json();
-
     if (data.success) {
+      serverOk = true;
       showToast('✅ Booking berhasil dikirim ke Hicupix!', 'success');
       e.target.reset();
       setTimeout(closeModal, 1800);
-    } else {
-      showToast('❌ ' + (data.message || 'Gagal mengirim, coba lagi.'), 'error');
     }
-  } catch {
-    showToast('❌ Tidak dapat terhubung ke server.', 'error');
-  } finally {
-    submitBtn.disabled    = false;
-    submitBtn.textContent = 'BOOK NOW';
+  } catch { /* server tidak tersedia, lanjut ke fallback */ }
+
+  // Fallback: redirect ke WA dengan isi form (untuk GitHub Pages / static hosting)
+  if (!serverOk) {
+    const pesan =
+      `*BOOKING HICUPIX PHOTOBOOTH* 📸\n\n` +
+      `👤 Nama / Acara : ${nama}\n` +
+      `📅 Tanggal      : ${tanggal}\n` +
+      `🕐 Jam Mulai    : ${jamMulai}\n` +
+      `🕔 Jam Selesai  : ${jamSelesai}\n` +
+      `📦 Paket        : ${paket}\n` +
+      `📍 Lokasi       : ${lokasi}`;
+
+    const url = `https://wa.me/6285927420172?text=${encodeURIComponent(pesan)}`;
+    window.open(url, '_blank');
+
+    showToast('✅ Booking diteruskan ke WhatsApp!', 'success');
+    e.target.reset();
+    setTimeout(closeModal, 1800);
   }
+
+  submitBtn.disabled    = false;
+  submitBtn.textContent = 'BOOK NOW';
 });
 
 // ── Toast Notification ───────────────────────────────────
